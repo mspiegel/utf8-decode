@@ -1,5 +1,10 @@
+#[cfg(feature="std")]
 use std::io::{Result, Error, ErrorKind};
-use std::convert::TryFrom;
+
+#[cfg(not(feature="std"))]
+use no_std_io::io::{Result, Error, ErrorKind};
+
+use core::convert::TryFrom;
 
 /// Read the next byte of the UTF-8 character out of the given byte iterator.
 /// The byte is returned as a `u32` for later shifting.
@@ -78,6 +83,8 @@ pub fn decode<I: Iterator<Item=u8>>(iter: &mut I) -> Option<Result<char>> {
 /// ## Example
 /// The `Decoder` iterator can be used, for instance, to decode `u8` slices.
 /// ```rust
+/// # use std::io;
+/// # use utf8_decode::Decoder;
 /// let bytes = [72, 101, 108, 108, 111, 32, 87, 111, 114, 108, 100, 33];
 ///
 /// let decoder = Decoder::new(bytes.iter().cloned());
@@ -88,6 +95,7 @@ pub fn decode<I: Iterator<Item=u8>>(iter: &mut I) -> Option<Result<char>> {
 /// }
 ///
 /// println!("{}", string);
+/// # Ok::<(), io::Error>(())
 /// ```
 ///
 /// ## Errors

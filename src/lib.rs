@@ -55,8 +55,18 @@
 //! }
 //! ```
 
+#![cfg_attr(not(feature = "std"), no_std)]
+
+#[cfg(feature="std")]
+extern crate std;
+
+#[cfg(feature="std")]
 use std::io::{Result, Error, ErrorKind};
-use std::convert::TryFrom;
+
+#[cfg(not(feature="std"))]
+use no_std_io::io::{Result, Error, ErrorKind};
+
+use core::convert::TryFrom;
 
 mod safe;
 pub use safe::{Decoder, decode};
@@ -138,7 +148,7 @@ pub fn decode_unsafe<I: Iterator<Item=Result<u8>>>(iter: &mut I) -> Option<Resul
 ///
 /// ## Example
 /// The `UnsafeDecoder` iterator can be used, for instance, to decode UTF-8 encoded files.
-/// ```rust
+/// ```ignore
 /// let file = File::open("file.txt")?;
 ///
 /// let decoder = UnsafeDecoder::new(file.bytes());
