@@ -1,10 +1,12 @@
-#[cfg(feature="std")]
-use std::io::{Result, Error, ErrorKind};
-
-#[cfg(not(feature="std"))]
-use no_std_io::io::{Result, Error, ErrorKind};
-
-use core::convert::TryFrom;
+cfg_if::cfg_if! {
+    if #[cfg(feature="std")] {
+        use std::io::{Result, Error, ErrorKind};
+        use std::convert::TryFrom;
+    } else {
+        use no_std_io::io::{Result, Error, ErrorKind};
+        use core::convert::TryFrom;
+    }
+}
 
 /// Read the next byte of the UTF-8 character out of the given byte iterator.
 /// The byte is returned as a `u32` for later shifting.

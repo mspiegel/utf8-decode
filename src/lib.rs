@@ -57,16 +57,16 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-#[cfg(feature="std")]
-extern crate std;
-
-#[cfg(feature="std")]
-use std::io::{Result, Error, ErrorKind};
-
-#[cfg(not(feature="std"))]
-use no_std_io::io::{Result, Error, ErrorKind};
-
-use core::convert::TryFrom;
+cfg_if::cfg_if! {
+    if #[cfg(feature="std")] {
+        extern crate std;
+        use std::io::{Result, Error, ErrorKind};
+        use std::convert::TryFrom;
+    } else {
+        use no_std_io::io::{Result, Error, ErrorKind};
+        use core::convert::TryFrom;
+    }
+}
 
 mod safe;
 pub use safe::{Decoder, decode};
